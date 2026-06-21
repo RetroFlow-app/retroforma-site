@@ -232,17 +232,18 @@ body::before {
   display: grid;
   gap: 18px;
   align-content: start;
-  padding-top: 10px;
+  padding-top: 0;
 }
 
 .hero-brand-mark {
-  width: min(100%, 460px);
+  width: min(100%, 430px);
   padding: 0;
 }
 
 .hero-brand-mark-clean {
   justify-self: center;
   align-self: start;
+  margin-top: -320px;
 }
 
 .hero-brand-mark img {
@@ -502,16 +503,17 @@ body::before {
     order: -1;
     justify-items: center;
     gap: 14px;
-    padding-top: 0;
-    margin-top: -4px;
+    padding-top: 8px;
+    margin-top: 0;
   }
 
   .hero-brand-mark {
-    width: min(100%, 400px);
+    width: min(100%, 380px);
   }
 
   .hero-brand-mark-clean {
     justify-self: center;
+    margin-top: 0;
   }
 
   .hero-links {
@@ -546,12 +548,12 @@ body::before {
   }
 
   .hero-visual {
-    margin-top: -10px;
+    margin-top: 0;
     gap: 10px;
   }
 
   .hero-brand-mark {
-    width: min(100%, 310px);
+    width: min(100%, 295px);
   }
 
   .hero h1 {
