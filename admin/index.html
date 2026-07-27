@@ -189,9 +189,15 @@
 (() => {
   const mount = document.querySelector('#rfFullAdminManager');
   if (!mount) return;
-  document.querySelector('#adminAccessPanel')?.classList.add('admin-hidden');
+  const ADMIN_CODE = 'RetroForma-Admin-2026';
+  const ADMIN_SESSION_KEY = 'retroforma_admin_session_unlocked_v2';
+  const loginForm = document.querySelector('#adminLoginForm');
+  const passwordInput = document.querySelector('#adminPasswordInput');
+  const logoutButton = document.querySelector('#adminLogoutButton');
+  const adminStatus = document.querySelector('#adminStatus');
   document.querySelector('#projectAdminPanel')?.classList.add('admin-hidden');
   document.querySelector('#productAdminPanel')?.classList.add('admin-hidden');
+  mount.classList.add('admin-hidden');
 
   const keys = {
     projectCustom: 'retroforma_custom_projects_v2',
@@ -354,7 +360,6 @@
   function renderList(node, items, kind) { node.innerHTML=''; items.forEach(item=>node.appendChild(row(kind,item))); }
   function render() {
     const projectItems = projects();
-    mount.classList.remove('admin-hidden');
     mount.innerHTML = `
       <div class="rf-real-admin">
         <div class="section-heading rf-real-heading">
@@ -383,7 +388,36 @@
     mount.querySelector('#rfAddProjectForm')?.addEventListener('submit', e => { e.preventDefault(); addProject(e.currentTarget); });
     renderList(document.querySelector('#rfRealProjectList'), projectItems, 'project');
   }
+
+  function setUnlocked(unlocked, message = '') {
+    mount.classList.toggle('admin-hidden', !unlocked);
+    logoutButton?.classList.toggle('admin-hidden', !unlocked);
+    if (adminStatus) {
+      adminStatus.textContent = message;
+      adminStatus.classList.toggle('is-error', !unlocked && Boolean(message));
+    }
+    if (passwordInput) passwordInput.value = '';
+  }
+
+  loginForm?.addEventListener('submit', event => {
+    event.preventDefault();
+    const code = String(passwordInput?.value || '').trim();
+    if (code === ADMIN_CODE) {
+      sessionStorage.setItem(ADMIN_SESSION_KEY, '1');
+      setUnlocked(true, 'Panel odblokowany.');
+    } else {
+      sessionStorage.removeItem(ADMIN_SESSION_KEY);
+      setUnlocked(false, 'Nieprawidlowy kod admina.');
+    }
+  });
+
+  logoutButton?.addEventListener('click', () => {
+    sessionStorage.removeItem(ADMIN_SESSION_KEY);
+    setUnlocked(false, 'Panel zablokowany.');
+  });
+
   render();
+  setUnlocked(sessionStorage.getItem(ADMIN_SESSION_KEY) === '1');
 })();
 </script>
 </body>
