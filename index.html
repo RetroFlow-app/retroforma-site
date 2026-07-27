@@ -4,17 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RetroForma</title>
-  <meta name="description" content="RetroForma to miejsce, w którym pomysły zamieniają się w działające rozwiązania.">
+  <meta name="description" content="RetroForma to miejsce, w którym pomysły zamieniają sie w działające rozwiązania.">
   <link rel="icon" type="image/png" href="./LOGO.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./styles.css?v=project-mail-1">
 </head>
 <body>
   <div class="site-shell">
     <header class="topbar">
-      <a class="brandmark" href="#start" aria-label="RetroForma">
+      <a class="brandmark" id="brandmark" href="#start" aria-label="RetroForma">
         <img src="./LOGO.png" alt="" width="36" height="30">
         <span>RetroForma</span>
       </a>
@@ -35,16 +35,16 @@
       <section class="hero" id="start">
         <div class="hero-copy">
           <p class="eyebrow" data-i18n="hero.eyebrow">Projektowanie 3D • prototypy • tworzenie na żywo</p>
-          <h1 data-i18n="hero.title">RetroForma to miejsce, w którym pomysły zamieniają się w działające rozwiązania.</h1>
+          <h1 data-i18n="hero.title">RetroForma to miejsce, w którym pomysły zamieniają sie w działające rozwiązania.</h1>
           <p class="lead" data-i18n="hero.lead">
-            Projektujemy funkcjonalne modele 3D, tworzymy prototypy i pokazujemy cały proces powstawania projektów na żywo.
+            Projektujemy funkcjonalne modele 3D, tworzymy prototypy i pokazujemy caly proces powstawania projektów na żywo.
           </p>
           <div class="hero-actions">
-            <a class="button button-primary" href="https://discord.gg/XhY6Rcy3f" target="_blank" rel="noreferrer" data-i18n="hero.discord">Dołącz do Discorda</a>
+            <a class="button button-primary" href="https://discord.gg/Jt38rHrsZ4" target="_blank" rel="noreferrer" data-i18n="hero.discord">Dołącz do Discorda</a>
             <a class="button button-secondary" href="#projects" data-i18n="hero.projects">Zobacz kierunek projektów</a>
           </div>
           <div class="hero-links" aria-label="Main platforms">
-            <a class="service-tile service-discord" href="https://discord.gg/XhY6Rcy3f" target="_blank" rel="noreferrer">
+            <a class="service-tile service-discord" href="https://discord.gg/Jt38rHrsZ4" target="_blank" rel="noreferrer">
               <span class="service-icon service-icon-large" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M8.5 8.5c1.1-.8 2.3-1.2 3.5-1.2s2.4.4 3.5 1.2"></path>
@@ -56,7 +56,7 @@
                 </svg>
               </span>
               <span class="service-name">Discord</span>
-              <span class="service-note" data-i18n="links.discordTitle">Społeczność, rozmowy i kontakt.</span>
+              <span class="service-note" data-i18n="links.discordTitle">Spolecznosc, rozmowy i kontakt.</span>
             </a>
             <a class="service-tile" href="https://buycoffee.to/retroforma" target="_blank" rel="noreferrer">
               <span class="service-icon service-icon-large" aria-hidden="true">
@@ -110,16 +110,16 @@
         <div class="about-grid">
           <article class="panel panel-wide">
             <p data-i18n="about.bodyOne">
-              RetroForma to przestrzeń dla osób, które lubią projektowanie, druk 3D i konkretne rozwiązania. Tu pomysły przechodzą przez realny proces: szkic, model, test, poprawkę i finalny rezultat.
+              RetroForma to przestrzeń dla osób, które lubią projektówanie, druk 3D i konkretne rozwiązania. Tu pomysły przechodza przez realny proces: szkic, model, test, poprawkę i finalny rezultat.
             </p>
             <p data-i18n="about.bodyTwo">
-              Marka rozwija się jako społeczność. To miejsce dla wspierających, obserwujących i ludzi, którzy chcą śledzić powstawanie projektów krok po kroku.
+              Marka rozwija sie jako społeczność. To miejsce dla wspierających, obserwujacych i ludzi, ktorzy chcą śledzić powstawanie projektów krok po kroku.
             </p>
           </article>
           <article class="panel stats-panel">
             <div class="metric">
               <span class="metric-value">CAD</span>
-              <span class="metric-label" data-i18n="about.metricOne">projektowanie funkcjonalne</span>
+              <span class="metric-label" data-i18n="about.metricOne">projektówanie funkcjonalne</span>
             </div>
             <div class="metric">
               <span class="metric-value">3D</span>
@@ -137,36 +137,41 @@
         <div class="section-heading">
           <p class="section-kicker" data-i18n="projects.kicker">Projekty</p>
           <h2 data-i18n="projects.title">Wybrane realizacje RetroForma.</h2>
-          <p data-i18n="projects.text">To projekty, które pokazują praktyczne podejście RetroForma: funkcję, estetykę i gotowy efekt, który naprawdę działa.</p>
+          <p data-i18n="projects.text">Sekcja projektów moze byc zwijana, a nowe pozycje dodasz samodzielnie bez przebudowy calej strony.</p>
         </div>
-        <div class="project-grid">
-          <article class="project-card">
-            <div class="project-thumb">
-              <img src="./Projekty/stojak.jpg" alt="Stojak na słuchawki RetroForma">
-            </div>
-            <div class="project-copy">
-              <h3 data-i18n="projects.cardOneTitle">Stojak na słuchawki</h3>
-              <p data-i18n="projects.cardOneText">Minimalistyczna forma z wyraźnym charakterem. Projekt, który porządkuje stanowisko i jednocześnie wygląda jak gotowy element nowoczesnego setupu.</p>
-            </div>
-          </article>
-          <article class="project-card">
-            <div class="project-thumb">
-              <img src="./Projekty/kolano.jpg" alt="Kolano redukcyjne RetroForma">
-            </div>
-            <div class="project-copy">
-              <h3 data-i18n="projects.cardTwoTitle">Kolano redukcyjne</h3>
-              <p data-i18n="projects.cardTwoText">Techniczny model zaprojektowany z myślą o konkretnym zastosowaniu. Tu liczy się dopasowanie, trwałość i czysty, profesjonalny rezultat po wydruku.</p>
-            </div>
-          </article>
-          <article class="project-card">
-            <div class="project-thumb">
-              <img src="./Projekty/klikacz.jpg" alt="Klikacz RetroForma">
-            </div>
-            <div class="project-copy">
-              <h3 data-i18n="projects.cardThreeTitle">Klikacz</h3>
-              <p data-i18n="projects.cardThreeText">Mały projekt z wyrazistą osobowością. Prostota, detal i satysfakcja z używania łączą się tu w formę, która od razu przyciąga wzrok.</p>
-            </div>
-          </article>
+        <div class="project-section-shell">
+          <div class="project-grid" id="projectPreviewGrid"></div>
+          <details class="library-panel" id="projectLibrary">
+            <summary class="library-summary">
+              <span class="library-summary-copy">
+                <span class="section-kicker" data-i18n="projects.more">Pokaż wiecej projektów</span>
+                <strong id="projectCount">3 pozycje</strong>
+              </span>
+              <span class="library-summary-icon" aria-hidden="true"></span>
+            </summary>
+            <div class="project-grid" id="projectGrid"></div>
+          </details>
+        </div>
+      </section>
+
+      <section class="section admin-hidden" id="products" aria-hidden="true">
+        <div class="section-heading">
+          <p class="section-kicker" data-i18n="products.kicker">Produkty</p>
+          <h2 data-i18n="products.title">Produkty i realizacje do zamówienia lub wyceny.</h2>
+          <p data-i18n="products.text">To nie jest klasyczny sklep. Klikasz, piszesz i ustalamy szczegóły bezpośrednio przez wiadomość.</p>
+        </div>
+        <div class="project-section-shell">
+          <div class="product-grid" id="productPreviewGrid"></div>
+          <details class="library-panel" id="productLibrary">
+            <summary class="library-summary">
+              <span class="library-summary-copy">
+                <span class="section-kicker" data-i18n="products.more">Pokaż wiecej produktow</span>
+                <strong id="productCount">3 pozycje</strong>
+              </span>
+              <span class="library-summary-icon" aria-hidden="true"></span>
+            </summary>
+            <div class="product-grid" id="productGrid"></div>
+          </details>
         </div>
       </section>
 
@@ -176,7 +181,7 @@
           <h2 data-i18n="links.title">Najważniejsze miejsca RetroForma.</h2>
         </div>
         <div class="link-grid">
-          <a class="link-card link-discord" href="https://discord.gg/XhY6Rcy3f" target="_blank" rel="noreferrer">
+          <a class="link-card link-discord" href="https://discord.gg/Jt38rHrsZ4" target="_blank" rel="noreferrer">
             <div class="link-card-head">
               <span class="service-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -190,7 +195,7 @@
               </span>
               <span class="link-label">Discord</span>
             </div>
-            <strong data-i18n="links.discordTitle">Społeczność, rozmowy i kontakt.</strong>
+            <strong data-i18n="links.discordTitle">Spolecznosc, rozmowy i kontakt.</strong>
           </a>
           <a class="link-card" href="https://buycoffee.to/retroforma" target="_blank" rel="noreferrer">
             <div class="link-card-head">
@@ -239,12 +244,12 @@
         <div class="section-heading">
           <p class="section-kicker" data-i18n="live.kicker">Transmisje</p>
           <h2 data-i18n="live.title">Proces projektów można śledzić także na żywo.</h2>
-          <p data-i18n="live.text">Na TikToku pojawiają się transmisje z projektowania, testów i powstawania kolejnych rozwiązań krok po kroku.</p>
+          <p data-i18n="live.text">Na TikToku pojawiają sie transmisje z projektówania, testów i powstawania kolejnych rozwiązań krok po kroku.</p>
         </div>
         <div class="live-panel">
           <div class="live-copy">
             <strong data-i18n="live.cardTitle">TikTok RetroForma</strong>
-            <p data-i18n="live.cardText">Miejsce, gdzie projekty wychodzą z ekranu CAD i zaczynają działać w praktyce.</p>
+            <p data-i18n="live.cardText">Miejsce, gdzie projekty wychodza z ekranu CAD i zaczynaja dzialac w praktyce.</p>
           </div>
           <a class="button button-secondary" href="https://www.tiktok.com/@retroforma" target="_blank" rel="noreferrer" data-i18n="live.cardAction">Przejdź do TikToka</a>
         </div>
@@ -253,25 +258,25 @@
       <section class="section" id="retroflow">
         <div class="section-heading">
           <p class="section-kicker">RetroFlow</p>
-          <h2 data-i18n="retroflow.title">RetroFlow rozwija się jako narzędzie dla wspierających.</h2>
+          <h2 data-i18n="retroflow.title">RetroFlow rozwija sie jako narzędzie dla wspierających.</h2>
         </div>
         <div class="retroflow-panel">
           <div>
-            <p data-i18n="retroflow.textOne">RetroFlow pomaga przesuwać projekty do przodu bez zbędnego chaosu. To system rozwijany jako bonus dla osób wspierających społeczność RetroForma.</p>
-            <p data-i18n="retroflow.textTwo">Sekcja jest gotowa pod dalszy rozwój i późniejsze podpięcie własnego adresu w domenie.</p>
+            <p data-i18n="retroflow.textOne">RetroFlow pomaga przesuwac projekty do przodu bez zbędnego chaosu. To system rozwijany jako bonus dla osób wspierających społeczność RetroForma.</p>
+            <p data-i18n="retroflow.textTwo">Sekcja jest gotowa pod dalszy rozwoj i późniejsze podpięcie własnego adresu w domenie.</p>
           </div>
-          <a class="button button-primary" href="https://retroflow-8mf8.onrender.com/" target="_blank" rel="noreferrer" data-i18n="retroflow.action">Otwórz RetroFlow</a>
+          <a class="button button-primary" href="https://retroflow-8mf8.onrender.com/" target="_blank" rel="noreferrer" data-i18n="retroflow.action">Otworz RetroFlow</a>
         </div>
       </section>
 
       <section class="section" id="contact">
         <div class="section-heading">
           <p class="section-kicker" data-i18n="contact.kicker">Kontakt</p>
-          <h2 data-i18n="contact.title">Napisz bezpośrednio albo wejdź na Discorda.</h2>
+          <h2 data-i18n="contact.title">Napisz bezpośrednio albo wejdz na Discorda.</h2>
         </div>
         <div class="contact-grid">
           <article class="panel contact-panel contact-panel-compact">
-            <p data-i18n="contact.text">Jeżeli chcesz zapytać o projekt, współpracę albo po prostu odezwać się w sprawie RetroForma, wybierz wygodny kontakt poniżej.</p>
+            <p data-i18n="contact.text">Jeżeli chcesz zapytac o projekt, współpracę albo po prostu odezwac sie w sprawie RetroForma, wybierz wygodny kontakt poniżej.</p>
             <div class="contact-actions">
               <a class="contact-card contact-card-mail" href="mailto:3dretroforma@gmail.com?subject=Kontakt%20RetroForma">
                 <span class="service-icon service-icon-large" aria-hidden="true">
@@ -285,7 +290,7 @@
                   <span>3dretroforma@gmail.com</span>
                 </span>
               </a>
-              <a class="contact-card contact-card-discord" href="https://discord.gg/XhY6Rcy3f" target="_blank" rel="noreferrer">
+              <a class="contact-card contact-card-discord" href="https://discord.gg/Jt38rHrsZ4" target="_blank" rel="noreferrer">
                 <span class="service-icon service-icon-large" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M8.5 8.5c1.1-.8 2.3-1.2 3.5-1.2s2.4.4 3.5 1.2"></path>
@@ -298,16 +303,21 @@
                 </span>
                 <span class="contact-card-copy">
                   <strong data-i18n="contact.discordTitle">Wejdź na Discord</strong>
-                  <span data-i18n="contact.discord">Discord społeczności RetroForma</span>
+                  <span data-i18n="contact.discord">Discord społecznośći RetroForma</span>
                 </span>
               </a>
             </div>
           </article>
           <article class="panel direct-panel contact-note-panel">
             <strong data-i18n="contact.directTitle">Szybki kontakt</strong>
-            <p data-i18n="contact.note">Najprościej złapać mnie mailem lub przez Discord, zależnie od tego, co jest wygodniejsze w danym momencie.</p>
+            <p data-i18n="contact.note">Najprosciej złapać mnie mailem lub przez Discord, zależnie od tego, co jest wygodniejsze w danym momencie.</p>
           </article>
         </div>
+      </section>
+      <section class="legal-mini" id="privacy" aria-label="Dokumenty prawne i cookies">
+        <a href="./regulamin/" data-legal-modal="rules">Regulamin</a>
+        <a href="./polityka-prywatnosci/" data-legal-modal="privacy">Polityka prywatności</a>
+        <span>Cookies techniczne: język i zapamiętanie zamknięcia komunikatu.</span>
       </section>
     </main>
 
@@ -317,6 +327,23 @@
     </footer>
   </div>
 
-  <script src="./script.js"></script>
+  <div class="cookie-notice admin-hidden" id="cookieNotice" role="dialog" aria-live="polite" aria-label="Informacja o cookies">
+    <p>Serwis korzysta tylko z niezbędnych cookies technicznych: język i zapamiętanie zamknięcia tego komunikatu.</p>
+    <a href="./polityka-prywatnosci/" data-legal-modal="privacy">Polityka prywatności</a>
+    <button type="button" class="button button-primary" id="cookieAccept">Rozumiem</button>
+  </div>
+
+  <div class="legal-modal admin-hidden" id="legalModal" role="dialog" aria-modal="true" aria-labelledby="legalModalTitle">
+    <div class="legal-modal-backdrop" data-legal-close="1"></div>
+    <section class="legal-modal-panel">
+      <header class="legal-modal-header">
+        <h2 id="legalModalTitle">Dokument</h2>
+        <button type="button" class="legal-modal-close" data-legal-close="1" aria-label="Zamknij">Zamknij</button>
+      </header>
+      <iframe class="legal-modal-frame" id="legalModalFrame" title="Dokument prawny RetroForma"></iframe>
+    </section>
+  </div>
+
+  <script src="./script.js?v=project-mail-1"></script>
 </body>
 </html>
