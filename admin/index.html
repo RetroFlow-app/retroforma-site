@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RetroForma Admin</title>
+  <meta name="description" content="Panel admina RetroForma.">
+  <base href="../">
+  <link rel="icon" type="image/png" href="./LOGO.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=project-mail-1">
+</head>
+<body data-admin-page="true">
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brandmark" id="brandmark" href="index.html#start" aria-label="RetroForma">
+        <img src="LOGO.png" alt="" width="36" height="30">
+        <span>RetroForma Admin</span>
+      </a>
+      <nav class="topnav" aria-label="Primary">
+        <a href="../index.html">Wróć do strony</a>
+      </nav>
+      <div class="lang-switch" role="group" aria-label="Language switch">
+        <button type="button" class="lang-btn is-active" data-lang="pl">PL</button>
+        <button type="button" class="lang-btn" data-lang="en">EN</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="section" id="admin">
+        <div class="section-heading">
+          <p class="section-kicker" data-i18n="admin.kicker">Admin</p>
+          <h2 data-i18n="admin.heading">Panel lokalnego zarządzania treścią.</h2>
+          <p data-i18n="admin.headingText">Tutaj odblokujesz dodawanie projektów i produktów na tym urządzeniu, bez ruszania publicznego widoku strony.</p>
+        </div>
+        <div class="admin-section-shell">
+          <section class="panel admin-access-panel" id="adminAccessPanel">
+            <div class="admin-access-copy">
+              <p class="section-kicker" data-i18n="admin.kicker">Admin</p>
+              <strong data-i18n="admin.title">Panele dodawania są dostępne tylko dla admina.</strong>
+              <p data-i18n="admin.text">Zwykły odwiedzający nie widzi formularzy dodawania. Po odblokowaniu panelu można zarządzać projektami i produktami z tego urządzenia.</p>
+            </div>
+            <form id="adminLoginForm" class="admin-login-form">
+              <label>
+                <span data-i18n="admin.password">Kod admina</span>
+                <input type="password" id="adminPasswordInput" name="adminPassword" autocomplete="current-password" required>
+              </label>
+              <div class="admin-login-actions">
+                <button type="submit" class="button button-primary" data-i18n="admin.button">Wejdź do panelu</button>
+                <button type="button" id="adminLogoutButton" class="button button-secondary admin-hidden" data-i18n="admin.logout">Wyloguj admina</button>
+              </div>
+              <p class="admin-status" id="adminStatus"></p>
+            </form>
+          </section>
+
+<section class="panel admin-hidden" id="rfFullAdminManager"></section>
+
+          <details class="panel project-admin-panel admin-hidden" id="projectAdminPanel">
+            <summary class="panel-summary">
+              <span>
+                <strong data-i18n="projects.manage">Dodaj projekt samodzielnie</strong>
+                <small data-i18n="projects.manageText">Ten formularz działa od razu w przeglądarce. Dodane projekty zapisują się lokalnie na tym urządzeniu.</small>
+              </span>
+              <span class="panel-summary-icon" aria-hidden="true"></span>
+            </summary>
+            <div class="project-admin-body">
+              <form id="projectForm" class="project-form">
+                <label>
+                  <span data-i18n="projects.formTitle">Nazwa projektu</span>
+                  <input type="text" name="title" required>
+                </label>
+                <label>
+                  <span data-i18n="projects.formDescription">Opis</span>
+                  <textarea name="description" rows="4" required></textarea>
+                </label>
+                <div class="project-form-inline">
+                  <label>
+                    <span data-i18n="projects.formTag">Krótki tag</span>
+                    <input type="text" name="tag">
+                  </label>
+                  <label>
+                    <span data-i18n="projects.formPrice">Cena</span>
+                    <input type="text" name="price" placeholder="np. od 89 zl">
+                  </label>
+                </div>
+                <div class="project-form-inline">
+                  <label>
+                    <span data-i18n="projects.formShipping">Koszt wysyłki</span>
+                    <input type="text" name="shipping" placeholder="np. od 16 zl">
+                  </label>
+                  <label>
+                    <span data-i18n="projects.formLeadTime">Czas realizacji</span>
+                    <input type="text" name="leadTime" placeholder="np. 2-4 dni">
+                  </label>
+                </div>
+                <div class="project-form-inline">
+                  <label>
+                    <span data-i18n="projects.formPayment">Płatność</span>
+                    <input type="text" name="payment" placeholder="np. płatność z góry">
+                  </label>
+                  <label class="checkbox-field">
+                    <input type="checkbox" name="availableForOrder">
+                    <span data-i18n="projects.formAvailable">Dostepny do kupienia</span>
+                  </label>
+                </div>
+                <div class="project-form-inline">
+                  <label>
+                    <span data-i18n="projects.formImage">Zdjęcie projektu</span>
+                    <input type="file" name="image" accept="image/*" multiple>
+                  </label>
+                </div>
+                <div class="project-form-actions">
+                  <button type="submit" class="button button-primary" data-i18n="projects.formButton">Dodaj projekt</button>
+                  <button type="button" id="resetProjectsButton" class="button button-secondary" data-i18n="projects.formReset">Usuń moje dodane projekty</button>
+                </div>
+              </form>
+              <p class="project-form-note" data-i18n="projects.formNote">Możesz dodać swoje zdjęcie albo zostawić puste pole, jeśli chcesz najpierw wrzucić sam opis.</p>
+            </div>
+          </details>
+
+          <details class="panel project-admin-panel admin-hidden" id="productAdminPanel">
+            <summary class="panel-summary">
+              <span>
+                <strong data-i18n="products.manage">Dodaj produkt samodzielnie</strong>
+                <small data-i18n="products.manageText">Ten formularz jest dostępny tylko po odblokowaniu panelu admina i zapisuje produkty lokalnie na tym urządzeniu.</small>
+              </span>
+              <span class="panel-summary-icon" aria-hidden="true"></span>
+            </summary>
+            <div class="project-admin-body">
+              <form id="productForm" class="project-form">
+                <label>
+                  <span data-i18n="products.formTitle">Nazwa produktu</span>
+                  <input type="text" name="title" required>
+                </label>
+                <label>
+                  <span data-i18n="products.formDescription">Opis produktu</span>
+                  <textarea name="description" rows="4" required></textarea>
+                </label>
+                <div class="project-form-inline">
+                  <label>
+                    <span data-i18n="products.formLabel">Tekst przycisku</span>
+                    <input type="text" name="label" placeholder="Na zamówienie">
+                  </label>
+                  <label>
+                    <span data-i18n="products.formPrice">Cena</span>
+                    <input type="text" name="price" placeholder="np. od 89 zl">
+                  </label>
+                </div>
+                <div class="project-form-inline">
+                  <label>
+                    <span data-i18n="products.formShipping">Koszt wysyłki</span>
+                    <input type="text" name="shipping" placeholder="np. od 16 zl">
+                  </label>
+                  <label>
+                    <span data-i18n="products.formLeadTime">Czas realizacji</span>
+                    <input type="text" name="leadTime" placeholder="np. 2-4 dni">
+                  </label>
+                </div>
+                <div class="project-form-inline">
+                  <label>
+                    <span data-i18n="products.formPayment">Płatność</span>
+                    <input type="text" name="payment" placeholder="np. płatność z góry">
+                  </label>
+                  <label class="checkbox-field">
+                    <input type="checkbox" name="availableForOrder">
+                    <span data-i18n="products.formAvailable">Dostepny do kupienia</span>
+                  </label>
+                  <label>
+                    <span data-i18n="products.formImage">Zdjęcie produktu</span>
+                    <input type="file" name="image" accept="image/*" multiple>
+                  </label>
+                </div>
+                <div class="project-form-actions">
+                  <button type="submit" class="button button-primary" data-i18n="products.formButton">Dodaj produkt</button>
+                  <button type="button" id="resetProductsButton" class="button button-secondary" data-i18n="products.formReset">Usuń moje dodane produkty</button>
+                </div>
+              </form>
+              <p class="project-form-note" data-i18n="products.formNote">Możesz dodać produkt ze zdjęciem albo najpierw wrzucić sam opis i poprawić resztę później.</p>
+            </div>
+          </details>
+        </div>
+      </section>
+    </main>
+  </div>
+<script>
+/* RetroForma standalone inline admin app v1 */
+(() => {
+  const mount = document.querySelector('#rfFullAdminManager');
+  if (!mount) return;
+  document.querySelector('#adminAccessPanel')?.classList.add('admin-hidden');
+  document.querySelector('#projectAdminPanel')?.classList.add('admin-hidden');
+  document.querySelector('#productAdminPanel')?.classList.add('admin-hidden');
+
+  const keys = {
+    projectCustom: 'retroforma_custom_projects_v2',
+    projectHidden: 'retroforma_hidden_default_projects_v1',
+    projectOrder: 'retroforma_project_order_v1',
+    projectOverride: 'retroforma_project_overrides_v2',
+    productCustom: 'retroforma_custom_products_v1',
+    productHidden: 'retroforma_hidden_default_products_v1',
+    productOrder: 'retroforma_product_order_v1',
+    productOverride: 'retroforma_product_overrides_v2'
+  };
+
+  const defaultProjects = [
+    { id:'default-headphone-stand', title:'Stojak na słuchawki', description:'Minimalistyczna forma z wyraźnym charakterem. Projekt, który porządkuje stanowisko i jednocześnie wygląda jak gotowy element nowoczesnego setupu.', tag:'', price:'od 89 zł', shipping:'od 16 zł', leadTime:'2-4 dni', payment:'płatność z góry', availableForOrder:false, images:['./Projekty/stojak.jpg'] },
+    { id:'default-reducer-elbow', title:'Kolano redukcyjne', description:'Techniczny model zaprojektowany z myślą o konkretnym zastosowaniu. Tu liczy się dopasowanie, trwałość i czysty, profesjonalny rezultat po wydruku.', tag:'', price:'wycena indywidualna', shipping:'od 16 zł', leadTime:'3-7 dni', payment:'płatność z góry', availableForOrder:false, images:['./Projekty/kolano.jpg'] },
+    { id:'default-clicker', title:'Klikacz', description:'Mały projekt z wyrazistą osobowością. Prostota, detal i satysfakcja z używania łączą się tu w formę, która od razu przyciąga wzrok.', tag:'', price:'od 39 zł', shipping:'od 14 zł', leadTime:'2-3 dni', payment:'płatność z góry', availableForOrder:false, images:['./Projekty/klikacz.jpg'] }
+  ];
+
+  const defaultProducts = [
+    { id:'default-headphone-stand', title:'Stojak na słuchawki', description:'Gotowy kierunek pod zamówienia indywidualne, różne kolory i drobne dopasowania.', label:'', price:'od 89 zł', shipping:'od 16 zł', leadTime:'2-4 dni', payment:'płatność z góry', availableForOrder:false, images:['./Projekty/stojak.jpg'] },
+    { id:'default-clicker', title:'Klikacz', description:'Lekki, przyjemny w używaniu gadżet drukowany 3D z możliwością dopracowania detali.', label:'', price:'od 39 zł', shipping:'od 14 zł', leadTime:'2-3 dni', payment:'płatność z góry', availableForOrder:false, images:['./Projekty/klikacz.jpg'] },
+    { id:'default-technical-part', title:'Element techniczny', description:'Modele użytkowe i techniczne tworzone pod konkretne potrzeby, wymiary i zastosowania.', label:'', price:'wycena indywidualna', shipping:'od 16 zł', leadTime:'3-7 dni', payment:'płatność z góry', availableForOrder:false, images:['./Projekty/kolano.jpg'] }
+  ];
+
+  let activeAdminTab = 'projects';
+
+  function read(key, fallback) { try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); } catch { return fallback; } }
+  function write(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
+  function list(key) { const value = read(key, []); return Array.isArray(value) ? value : []; }
+  function map(key) { const value = read(key, {}); return value && typeof value === 'object' && !Array.isArray(value) ? value : {}; }
+  function id(prefix) { return prefix + '-' + Date.now() + '-' + Math.random().toString(36).slice(2,8); }
+  function esc(value) { return String(value || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function images(value, fallback=[]) { const arr = String(value || '').split(',').map(v=>v.trim()).filter(Boolean); return arr.length ? arr : fallback.filter(Boolean); }
+  function readFileAsDataUrl(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result || '')); reader.onerror = reject; reader.readAsDataURL(file); }); }
+  function normalize(key, prefix) { const arr = list(key).map(item => item.id ? item : {...item, id:id(prefix)}); write(key, arr); return arr; }
+
+  function ordered(items, key) {
+    const order = list(key); const rank = new Map(order.map((v,i)=>[v,i]));
+    return items.map((item,i)=>({...item, fallback:i})).sort((a,b)=>{
+      const ar = rank.has(a.orderId) ? rank.get(a.orderId) : 999999 + a.fallback;
+      const br = rank.has(b.orderId) ? rank.get(b.orderId) : 999999 + b.fallback;
+      return ar - br;
+    }).map((item,i,all)=>({...item, canUp:i>0, canDown:i<all.length-1}));
+  }
+
+  function projects() {
+    const hidden = new Set(list(keys.projectHidden)); const overrides = map(keys.projectOverride);
+    const defs = defaultProjects.filter(i=>!hidden.has(i.id)).map(i=>({ ...i, ...(overrides[i.id]||{}), type:'default', orderId:'project-default:'+i.id }));
+    const custom = normalize(keys.projectCustom,'project').map((i,idx)=>({ ...i, images:Array.isArray(i.images)&&i.images.length?i.images:[i.image].filter(Boolean), type:'custom', index:idx, orderId:'project-custom:'+i.id }));
+    return ordered([...defs,...custom], keys.projectOrder);
+  }
+
+  function products() {
+    const hidden = new Set(list(keys.productHidden)); const overrides = map(keys.productOverride);
+    const defs = defaultProducts.filter(i=>!hidden.has(i.id)).map(i=>({ ...i, ...(overrides[i.id]||{}), type:'default', orderId:'product-default:'+i.id }));
+    const custom = normalize(keys.productCustom,'product').map((i,idx)=>({ ...i, images:Array.isArray(i.images)&&i.images.length?i.images:[i.image].filter(Boolean), type:'custom', index:idx, orderId:'product-custom:'+i.id }));
+    return ordered([...defs,...custom], keys.productOrder);
+  }
+
+  function move(kind, orderId, dir) {
+    const arr = kind === 'project' ? projects() : products(); const idx = arr.findIndex(i=>i.orderId===orderId); const next = idx + dir;
+    if (idx < 0 || next < 0 || next >= arr.length) return;
+    [arr[idx], arr[next]] = [arr[next], arr[idx]];
+    write(kind === 'project' ? keys.projectOrder : keys.productOrder, arr.map(i=>i.orderId)); render();
+  }
+
+  function remove(kind, item) {
+    if (kind === 'project') {
+      if (item.type === 'custom') { const arr = normalize(keys.projectCustom,'project'); arr.splice(item.index,1); write(keys.projectCustom, arr); }
+      else write(keys.projectHidden, [...new Set([...list(keys.projectHidden), item.id])]);
+      write(keys.projectOrder, list(keys.projectOrder).filter(v=>v!==item.orderId));
+    } else {
+      if (item.type === 'custom') { const arr = normalize(keys.productCustom,'product'); arr.splice(item.index,1); write(keys.productCustom, arr); }
+      else write(keys.productHidden, [...new Set([...list(keys.productHidden), item.id])]);
+      write(keys.productOrder, list(keys.productOrder).filter(v=>v!==item.orderId));
+    }
+    render();
+  }
+
+  function field(label, name, value, area=false) { return '<label><span>'+label+'</span>'+(area?'<textarea name="'+name+'" rows="3">'+esc(value)+'</textarea>':'<input type="text" name="'+name+'" value="'+esc(value)+'">')+'</label>'; }
+  function checkbox(label, name, checked=false) { return '<label class="checkbox-field"><input type="checkbox" name="'+name+'" '+(checked?'checked':'')+'><span>'+label+'</span></label>'; }
+  function preview(srcs) { return '<div class="rf-image-preview">'+(srcs.length?srcs.map(src=>'<figure><img src="'+esc(src.replace(/^\.\//,''))+'" alt=""><figcaption>'+esc(src)+'</figcaption></figure>').join(''):'<span class="rf-image-preview-empty">Brak zdjęć</span>')+'</div>'; }
+  function actions(item) { return '<div class="rf-real-actions"><button type="button" data-action="up" class="button button-secondary" '+(item.canUp?'':'disabled')+'>W górę</button><button type="button" data-action="down" class="button button-secondary" '+(item.canDown?'':'disabled')+'>W dół</button><button type="submit" class="button button-primary">Zapisz</button><button type="button" data-action="delete" class="button button-secondary">Usuń</button></div>'; }
+
+  function row(kind, item) {
+    const form = document.createElement('form'); form.className = 'rf-real-row';
+    const srcs = Array.isArray(item.images) ? item.images : [];
+    form.innerHTML = '<div class="rf-real-head"><strong>'+esc(item.title)+'</strong><span>'+(item.type==='default'?'Domyślny':'Dodany')+'</span></div>'+
+      field('Nazwa','title',item.title)+field('Opis','description',item.description,true)+
+      (kind==='project'?field('Tag','tag',item.tag||'')+field('Cena','price',item.price||'')+field('Wysyłka','shipping',item.shipping||'')+field('Realizacja','leadTime',item.leadTime||'')+field('Płatność','payment',item.payment||'')+checkbox('Dostepny do kupienia','availableForOrder', item.availableForOrder === true || item.availableForOrder === 'true' || item.availableForOrder === 'on'):field('Etykieta','label',item.label||'')+field('Cena','price',item.price||'')+field('Wysyłka','shipping',item.shipping||'')+field('Realizacja','leadTime',item.leadTime||'')+field('Płatność','payment',item.payment||'')+checkbox('Dostepny do kupienia','availableForOrder', item.availableForOrder === true || item.availableForOrder === 'true' || item.availableForOrder === 'on'))+
+      field('Zdjęcia / ścieżki po przecinku','images',srcs.join(', '))+preview(srcs)+actions(item);
+    form.addEventListener('submit', e => { e.preventDefault(); save(kind,item,form); });
+    form.querySelector('[data-action="up"]').addEventListener('click',()=>move(kind,item.orderId,-1));
+    form.querySelector('[data-action="down"]').addEventListener('click',()=>move(kind,item.orderId,1));
+    form.querySelector('[data-action="delete"]').addEventListener('click',()=>remove(kind,item));
+    form.querySelector('input[name="images"]').addEventListener('input', e => { const p=form.querySelector('.rf-image-preview'); p.outerHTML=preview(images(e.target.value, srcs)); });
+    return form;
+  }
+
+  function save(kind, item, form) {
+    const data = new FormData(form); const srcs = images(data.get('images'), item.images || []);
+    const base = { title:String(data.get('title')||'').trim(), description:String(data.get('description')||'').trim(), image:srcs[0]||'', images:srcs };
+    if (!base.title || !base.description) return;
+    if (kind === 'project') {
+      const next = {...base, tag:String(data.get('tag')||'').trim(), price:String(data.get('price')||'').trim(), shipping:String(data.get('shipping')||'').trim(), leadTime:String(data.get('leadTime')||'').trim(), payment:String(data.get('payment')||'').trim(), availableForOrder:data.get('availableForOrder')==='on', alt:base.title};
+      if (item.type === 'custom') { const arr=normalize(keys.projectCustom,'project'); arr[item.index]={...arr[item.index],...next}; write(keys.projectCustom,arr); }
+      else { const o=map(keys.projectOverride); o[item.id]=next; write(keys.projectOverride,o); }
+    } else {
+      const next = {...base, label:String(data.get('label')||'').trim(), price:String(data.get('price')||'').trim(), shipping:String(data.get('shipping')||'').trim(), leadTime:String(data.get('leadTime')||'').trim(), payment:String(data.get('payment')||'').trim(), availableForOrder:data.get('availableForOrder')==='on'};
+      if (item.type === 'custom') { const arr=normalize(keys.productCustom,'product'); arr[item.index]={...arr[item.index],...next}; write(keys.productCustom,arr); }
+      else { const o=map(keys.productOverride); o[item.id]=next; write(keys.productOverride,o); }
+    }
+    render();
+  }
+
+  async function addProject(form) {
+    const data = new FormData(form);
+    const title = String(data.get('title') || '').trim();
+    const description = String(data.get('description') || '').trim();
+    if (!title || !description) return;
+    const typedImages = images(data.get('images'), []);
+    const fileInput = form.querySelector('input[name="imageFiles"]');
+    const uploadedImages = await Promise.all(Array.from(fileInput?.files || []).map(readFileAsDataUrl));
+    const srcs = [...uploadedImages, ...typedImages].filter(Boolean);
+    const arr = normalize(keys.projectCustom, 'project');
+    arr.unshift({ id:id('project'), title, description, tag:String(data.get('tag') || '').trim(), price:String(data.get('price') || '').trim(), shipping:String(data.get('shipping') || '').trim(), leadTime:String(data.get('leadTime') || '').trim(), payment:String(data.get('payment') || '').trim(), availableForOrder:data.get('availableForOrder') === 'on', alt:title, image:srcs[0] || '', images:srcs });
+    write(keys.projectCustom, arr);
+    form.reset();
+    render();
+  }
+
+  async function addProduct(form) {
+    const data = new FormData(form);
+    const title = String(data.get('title') || '').trim();
+    const description = String(data.get('description') || '').trim();
+    if (!title || !description) return;
+    const typedImages = images(data.get('images'), []);
+    const fileInput = form.querySelector('input[name="imageFiles"]');
+    const uploadedImages = await Promise.all(Array.from(fileInput?.files || []).map(readFileAsDataUrl));
+    const srcs = [...uploadedImages, ...typedImages].filter(Boolean);
+    const arr = normalize(keys.productCustom, 'product');
+    arr.unshift({
+      id:id('product'),
+      title,
+      description,
+      label:String(data.get('label') || '').trim(),
+      price:String(data.get('price') || '').trim(),
+      shipping:String(data.get('shipping') || '').trim(),
+      leadTime:String(data.get('leadTime') || '').trim(),
+      payment:String(data.get('payment') || '').trim(),
+      availableForOrder:data.get('availableForOrder') === 'on',
+      image:srcs[0] || '',
+      images:srcs
+    });
+    write(keys.productCustom, arr);
+    form.reset();
+    render();
+  }
+
+  function renderList(node, items, kind) { node.innerHTML=''; items.forEach(item=>node.appendChild(row(kind,item))); }
+  function render() {
+    const projectItems = projects();
+    mount.classList.remove('admin-hidden');
+    mount.innerHTML = `
+      <div class="rf-real-admin">
+        <div class="section-heading rf-real-heading">
+          <p class="section-kicker">Zarzadzanie</p>
+          <h2>Projekty RetroForma</h2>
+          <p>Edytuj projekty bez budowania nowej wersji strony. Ptaszek wlacza cene, realizacje i zamowienie przez mail przy konkretnym projekcie.</p>
+        </div>
+        <section class="rf-real-panel rf-real-add-panel">
+          <div class="rf-real-panel-head"><h3>Dodaj projekt</h3><p>Zaznacz ptaszek tylko wtedy, gdy projekt ma byc mozliwy do kupienia z cena i czasem realizacji.</p></div>
+          <form class="rf-real-row rf-real-add-form" id="rfAddProjectForm">
+            ${field('Nazwa','title','')}
+            ${field('Opis','description','',true)}
+            ${field('Tag','tag','')}
+            ${field('Cena','price','')}
+            ${field('Wysylka','shipping','')}
+            ${field('Realizacja','leadTime','')}
+            ${field('Platnosc','payment','')}
+            ${checkbox('Dostepny do kupienia','availableForOrder', false)}
+            ${field('Zdjecia / sciezki po przecinku','images','')}
+            <label><span>Wgraj zdjecia z dysku</span><input type="file" name="imageFiles" accept="image/*" multiple></label>
+            <div class="rf-real-actions"><button type="submit" class="button button-primary">Dodaj projekt</button></div>
+          </form>
+        </section>
+        <section class="rf-real-panel is-active"><div class="rf-real-panel-head"><h3>Projekty <span>${projectItems.length}</span></h3><p>Widoczne na glownej stronie. Ptaszek przy projekcie pokazuje informacje o kupnie.</p></div><div class="rf-real-list" id="rfRealProjectList"></div></section>
+      </div>`;
+    mount.querySelector('#rfAddProjectForm')?.addEventListener('submit', e => { e.preventDefault(); addProject(e.currentTarget); });
+    renderList(document.querySelector('#rfRealProjectList'), projectItems, 'project');
+  }
+  render();
+})();
+</script>
+</body>
+</html>
