@@ -319,7 +319,7 @@ const defaultProjects = [
     shipping: "od 16 zl",
     leadTime: "2-4 dni",
     payment: "płatność z góry",
-    availableForOrder: false,
+    availableForOrder: true,
     alt: {
       pl: "Stojak na słuchawki RetroForma",
       en: "RetroForma headphone stand"
@@ -334,7 +334,7 @@ const defaultProjects = [
     shipping: "od 16 zl",
     leadTime: "3-7 dni",
     payment: "płatność z góry",
-    availableForOrder: false,
+    availableForOrder: true,
     alt: {
       pl: "Kolano redukcyjne RetroForma",
       en: "RetroForma reducer elbow"
@@ -349,7 +349,7 @@ const defaultProjects = [
     shipping: "od 14 zl",
     leadTime: "2-3 dni",
     payment: "płatność z góry",
-    availableForOrder: false,
+    availableForOrder: true,
     alt: {
       pl: "Klikacz RetroForma",
       en: "RetroForma clicker"
@@ -2330,9 +2330,9 @@ updateAdminUi();
   const PRODUCT_OVERRIDE_KEY = "retroforma_product_overrides_v2";
 
   const defaultProjectData = [
-    { id: "default-headphone-stand", title: "Stojak na słuchawki", description: "Minimalistyczna forma z wyraźnym charakterem. Projekt, który porządkuje stanowisko i jednocześnie wygląda jak gotowy element nowoczesnego setupu.", tag: "", price: "od 89 zł", shipping: "od 16 zł", leadTime: "2-4 dni", payment: "płatność z góry", availableForOrder: false, images: ["./Projekty/stojak.jpg"] },
-    { id: "default-reducer-elbow", title: "Kolano redukcyjne", description: "Techniczny model zaprojektowany z myślą o konkretnym zastosowaniu. Tu liczy się dopasowanie, trwałość i czysty, profesjonalny rezultat po wydruku.", tag: "", price: "wycena indywidualna", shipping: "od 16 zł", leadTime: "3-7 dni", payment: "płatność z góry", availableForOrder: false, images: ["./Projekty/kolano.jpg"] },
-    { id: "default-clicker", title: "Klikacz", description: "Mały projekt z wyrazistą osobowością. Prostota, detal i satysfakcja z używania łączą się tu w formę, która od razu przyciąga wzrok.", tag: "", price: "od 39 zł", shipping: "od 14 zł", leadTime: "2-3 dni", payment: "płatność z góry", availableForOrder: false, images: ["./Projekty/klikacz.jpg"] }
+    { id: "default-headphone-stand", title: "Stojak na słuchawki", description: "Minimalistyczna forma z wyraźnym charakterem. Projekt, który porządkuje stanowisko i jednocześnie wygląda jak gotowy element nowoczesnego setupu.", tag: "", price: "od 89 zł", shipping: "od 16 zł", leadTime: "2-4 dni", payment: "płatność z góry", availableForOrder: true, images: ["./Projekty/stojak.jpg"] },
+    { id: "default-reducer-elbow", title: "Kolano redukcyjne", description: "Techniczny model zaprojektowany z myślą o konkretnym zastosowaniu. Tu liczy się dopasowanie, trwałość i czysty, profesjonalny rezultat po wydruku.", tag: "", price: "wycena indywidualna", shipping: "od 16 zł", leadTime: "3-7 dni", payment: "płatność z góry", availableForOrder: true, images: ["./Projekty/kolano.jpg"] },
+    { id: "default-clicker", title: "Klikacz", description: "Mały projekt z wyrazistą osobowością. Prostota, detal i satysfakcja z używania łączą się tu w formę, która od razu przyciąga wzrok.", tag: "", price: "od 39 zł", shipping: "od 14 zł", leadTime: "2-3 dni", payment: "płatność z góry", availableForOrder: true, images: ["./Projekty/klikacz.jpg"] }
   ];
 
   const defaultProductData = [
