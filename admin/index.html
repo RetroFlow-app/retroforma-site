@@ -189,7 +189,7 @@
 (() => {
   const mount = document.querySelector('#rfFullAdminManager');
   if (!mount) return;
-  const ADMIN_CODE = 'RetroForma-Admin-2026';
+  const ADMIN_CODE = crypto.randomUUID ? crypto.randomUUID() : String(Math.random());
   const ADMIN_SESSION_KEY = 'retroforma_admin_session_unlocked_v2';
   const loginForm = document.querySelector('#adminLoginForm');
   const passwordInput = document.querySelector('#adminPasswordInput');
@@ -418,6 +418,200 @@
 
   render();
   setUnlocked(sessionStorage.getItem(ADMIN_SESSION_KEY) === '1');
+})();
+
+/* RetroForma real server admin v1 */
+(() => {
+  const mount = document.querySelector('#rfFullAdminManager');
+  const loginForm = document.querySelector('#adminLoginForm');
+  const passwordInput = document.querySelector('#adminPasswordInput');
+  const logoutButton = document.querySelector('#adminLogoutButton');
+  const status = document.querySelector('#adminStatus');
+  const ADMIN_SESSION_KEY = 'retroforma_admin_session_unlocked_v2';
+  const ADMIN_CODE_KEY = 'retroforma_admin_code_v1';
+  const apiBase = (window.RETROFORMA_API_BASE || '').replace(/\/$/, '');
+  if (!mount) return;
+
+  function esc(value) {
+    return String(value || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function splitImages(value, fallback = []) {
+    const images = String(value || '').split(',').map((item) => item.trim()).filter(Boolean);
+    return images.length ? images : fallback;
+  }
+
+  function adminCode() {
+    return sessionStorage.getItem(ADMIN_CODE_KEY) || '';
+  }
+
+  async function api(path, options = {}) {
+    const response = await fetch(apiBase + path, {
+      ...options,
+      cache: 'no-store',
+      headers: {
+        'content-type': 'application/json',
+        'x-admin-code': adminCode(),
+        ...(options.headers || {})
+      }
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || 'Blad zapisu na serwerze');
+    return data;
+  }
+
+  function field(label, name, value, area = false) {
+    return `<label><span>${label}</span>${area ? `<textarea name="${name}" rows="3">${esc(value)}</textarea>` : `<input type="text" name="${name}" value="${esc(value)}">`}</label>`;
+  }
+
+  function projectForm(project) {
+    const form = document.createElement('form');
+    form.className = 'rf-real-row';
+    form.innerHTML = `
+      <div class="rf-real-head"><strong>${esc(project.title)}</strong><span>Serwer</span></div>
+      ${field('Nazwa', 'title', project.title)}
+      ${field('Opis', 'description', project.description, true)}
+      ${field('Tag', 'tag', project.tag || '')}
+      ${field('Cena', 'price', project.price || '')}
+      ${field('Wysyłka', 'shipping', project.shipping || '')}
+      ${field('Realizacja', 'leadTime', project.leadTime || '')}
+      ${field('Płatność', 'payment', project.payment || '')}
+      <label class="checkbox-field"><input type="checkbox" name="availableForOrder" ${project.availableForOrder ? 'checked' : ''}><span>Dostepny do kupienia</span></label>
+      ${field('Zdjęcia / ścieżki po przecinku', 'images', (project.images || []).join(', '))}
+      <div class="rf-real-actions">
+        <button type="submit" class="button button-primary">Zapisz na serwerze</button>
+        <button type="button" class="button button-secondary" data-delete>Usuń</button>
+      </div>`;
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      const next = {
+        title: String(data.get('title') || '').trim(),
+        description: String(data.get('description') || '').trim(),
+        tag: String(data.get('tag') || '').trim(),
+        price: String(data.get('price') || '').trim(),
+        shipping: String(data.get('shipping') || '').trim(),
+        leadTime: String(data.get('leadTime') || '').trim(),
+        payment: String(data.get('payment') || '').trim(),
+        availableForOrder: data.get('availableForOrder') === 'on',
+        images: splitImages(data.get('images'), project.images || [])
+      };
+      try {
+        await api('/api/projects/' + encodeURIComponent(project.id), { method: 'PUT', body: JSON.stringify(next) });
+        if (status) status.textContent = 'Zapisano na serwerze. Telefon zobaczy to po odświeżeniu.';
+        await renderServerAdmin();
+      } catch (error) {
+        if (status) status.textContent = error.message;
+      }
+    });
+    form.querySelector('[data-delete]')?.addEventListener('click', async () => {
+      try {
+        await api('/api/projects/' + encodeURIComponent(project.id), { method: 'DELETE' });
+        await renderServerAdmin();
+      } catch (error) {
+        if (status) status.textContent = error.message;
+      }
+    });
+    return form;
+  }
+
+  async function renderServerAdmin() {
+    if (sessionStorage.getItem(ADMIN_SESSION_KEY) !== '1') return;
+    mount.classList.remove('admin-hidden');
+    mount.innerHTML = `
+      <div class="rf-real-admin">
+        <div class="section-heading rf-real-heading">
+          <p class="section-kicker">Zarządzanie</p>
+          <h2>Projekty RetroForma</h2>
+          <p>Ten panel zapisuje dane na serwerze. Po zapisie komputer i telefon widzą tę samą wersję po odświeżeniu strony.</p>
+        </div>
+        <section class="rf-real-panel rf-real-add-panel">
+          <div class="rf-real-panel-head"><h3>Dodaj projekt</h3><p>Nowy projekt zapisze się we wspólnych danych serwera.</p></div>
+          <form class="rf-real-row" id="rfServerAddProjectForm">
+            ${field('Nazwa','title','')}
+            ${field('Opis','description','',true)}
+            ${field('Tag','tag','')}
+            ${field('Cena','price','')}
+            ${field('Wysyłka','shipping','')}
+            ${field('Realizacja','leadTime','')}
+            ${field('Płatność','payment','')}
+            <label class="checkbox-field"><input type="checkbox" name="availableForOrder" checked><span>Dostepny do kupienia</span></label>
+            ${field('Zdjęcia / ścieżki po przecinku','images','./Projekty/stojak.jpg')}
+            <div class="rf-real-actions"><button type="submit" class="button button-primary">Dodaj na serwerze</button></div>
+          </form>
+        </section>
+        <section class="rf-real-panel is-active"><div class="rf-real-panel-head"><h3>Projekty z serwera</h3></div><div class="rf-real-list" id="rfServerProjectList">Ładowanie...</div></section>
+      </div>`;
+
+    const list = mount.querySelector('#rfServerProjectList');
+    try {
+      const data = await api('/api/projects', { method: 'GET' });
+      list.innerHTML = '';
+      (data.projects || []).forEach((project) => list.appendChild(projectForm(project)));
+    } catch (error) {
+      list.innerHTML = `<p class="project-form-note">API serwera nie jest jeszcze aktywne: ${esc(error.message)}. Trzeba uruchomić tę stronę jako Web Service na Renderze.</p>`;
+    }
+
+    mount.querySelector('#rfServerAddProjectForm')?.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const data = new FormData(event.currentTarget);
+      const project = {
+        title: String(data.get('title') || '').trim(),
+        description: String(data.get('description') || '').trim(),
+        tag: String(data.get('tag') || '').trim(),
+        price: String(data.get('price') || '').trim(),
+        shipping: String(data.get('shipping') || '').trim(),
+        leadTime: String(data.get('leadTime') || '').trim(),
+        payment: String(data.get('payment') || '').trim(),
+        availableForOrder: data.get('availableForOrder') === 'on',
+        images: splitImages(data.get('images'), ['./Projekty/stojak.jpg'])
+      };
+      try {
+        await api('/api/projects', { method: 'POST', body: JSON.stringify(project) });
+        if (status) status.textContent = 'Dodano projekt na serwerze.';
+        await renderServerAdmin();
+      } catch (error) {
+        if (status) status.textContent = error.message;
+      }
+    });
+  }
+
+  loginForm?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const code = String(passwordInput?.value || '').trim();
+    if (!code) {
+      sessionStorage.removeItem(ADMIN_SESSION_KEY);
+      sessionStorage.removeItem(ADMIN_CODE_KEY);
+      if (status) status.textContent = 'Wpisz kod admina.';
+      return;
+    }
+    sessionStorage.setItem(ADMIN_CODE_KEY, code);
+    try {
+      await api('/api/admin/check', { method: 'GET' });
+      sessionStorage.setItem(ADMIN_CODE_KEY, code);
+      sessionStorage.setItem(ADMIN_SESSION_KEY, '1');
+      mount.classList.remove('admin-hidden');
+      logoutButton?.classList.remove('admin-hidden');
+      if (passwordInput) passwordInput.value = '';
+      if (status) status.textContent = 'Panel odblokowany przez serwer.';
+      await renderServerAdmin();
+    } catch (error) {
+      sessionStorage.removeItem(ADMIN_SESSION_KEY);
+      sessionStorage.removeItem(ADMIN_CODE_KEY);
+      mount.classList.add('admin-hidden');
+      logoutButton?.classList.add('admin-hidden');
+      if (status) status.textContent = 'Nieprawidlowy kod admina albo serwer API nie jest jeszcze aktywny.';
+    }
+  }, true);
+
+  logoutButton?.addEventListener('click', () => {
+    sessionStorage.removeItem(ADMIN_CODE_KEY);
+  }, true);
+
+  if (sessionStorage.getItem(ADMIN_SESSION_KEY) === '1') {
+    renderServerAdmin();
+  }
 })();
 </script>
 </body>
