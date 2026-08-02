@@ -1,0 +1,41 @@
+{
+  "projects": [
+    {
+      "id": "default-headphone-stand",
+      "title": "Stojak na sluchawki",
+      "description": "Minimalistyczna forma z wyraznym charakterem. Projekt, ktory porzadkuje stanowisko i jednoczesnie wyglada jak gotowy element nowoczesnego setupu.",
+      "tag": "",
+      "price": "od 89 zl",
+      "shipping": "od 16 zl",
+      "leadTime": "2-4 dni",
+      "payment": "platnosc z gory",
+      "availableForOrder": true,
+      "images": ["./Projekty/stojak.jpg"]
+    },
+    {
+      "id": "default-reducer-elbow",
+      "title": "Kolano redukcyjne",
+      "description": "Techniczny model zaprojektowany z mysla o konkretnym zastosowaniu. Tu liczy sie dopasowanie, trwalosc i czysty, profesjonalny rezultat po wydruku.",
+      "tag": "",
+      "price": "wycena indywidualna",
+      "shipping": "od 16 zl",
+      "leadTime": "3-7 dni",
+      "payment": "platnosc z gory",
+      "availableForOrder": true,
+      "images": ["./Projekty/kolano.jpg"]
+    },
+    {
+      "id": "default-clicker",
+      "title": "Klikacz",
+      "description": "Maly projekt z wyrazista osobowoscia. Prostota, detal i satysfakcja z uzywania lacza sie tu w forme, ktora od razu przyciaga wzrok.",
+      "tag": "",
+      "price": "od 39 zl",
+      "shipping": "od 14 zl",
+      "leadTime": "2-3 dni",
+      "payment": "platnosc z gory",
+      "availableForOrder": true,
+      "images": ["./Projekty/klikacz.jpg"]
+    }
+  ],
+  "updatedAt": null
+}
