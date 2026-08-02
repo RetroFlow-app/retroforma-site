@@ -9,6 +9,8 @@ const adminCode = process.env.RETROFORMA_ADMIN_CODE || "";
 const persistentDir = process.env.RETROFORMA_DATA_DIR || (fs.existsSync("/var/data") ? "/var/data/retroforma" : path.join(rootDir, "data"));
 const dataFile = process.env.RETROFORMA_DATA_FILE || path.join(persistentDir, "projects.json");
 const seedFile = path.join(rootDir, "data", "projects.json");
+let pgPool = null;
+let pgReady = false;
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -28,6 +30,50 @@ function ensureDataFile() {
   if (!fs.existsSync(dataFile)) {
     fs.copyFileSync(seedFile, dataFile);
   }
+}
+
+function hasDatabase() {
+  return Boolean(process.env.DATABASE_URL);
+}
+
+function readSeedData() {
+  const raw = fs.readFileSync(seedFile, "utf8");
+  const parsed = JSON.parse(raw);
+  return {
+    projects: Array.isArray(parsed.projects) ? parsed.projects : [],
+    updatedAt: parsed.updatedAt || null
+  };
+}
+
+function getPgPool() {
+  if (!pgPool) {
+    const { Pool } = require("pg");
+    pgPool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.DATABASE_URL.includes("sslmode=disable") ? false : { rejectUnauthorized: false }
+    });
+  }
+  return pgPool;
+}
+
+async function ensureDatabase() {
+  if (!hasDatabase() || pgReady) return;
+  const pool = getPgPool();
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS retroforma_store (
+      key text PRIMARY KEY,
+      value jsonb NOT NULL,
+      updated_at timestamptz NOT NULL DEFAULT now()
+    )
+  `);
+  const existing = await pool.query("SELECT key FROM retroforma_store WHERE key = $1", ["projects"]);
+  if (!existing.rowCount) {
+    await pool.query(
+      "INSERT INTO retroforma_store (key, value, updated_at) VALUES ($1, $2::jsonb, now())",
+      ["projects", JSON.stringify(readSeedData())]
+    );
+  }
+  pgReady = true;
 }
 
 function readJsonBody(req) {
@@ -51,7 +97,17 @@ function readJsonBody(req) {
   });
 }
 
-function readData() {
+async function readData() {
+  if (hasDatabase()) {
+    await ensureDatabase();
+    const result = await getPgPool().query("SELECT value, updated_at FROM retroforma_store WHERE key = $1", ["projects"]);
+    const row = result.rows[0];
+    const value = row?.value || {};
+    return {
+      projects: Array.isArray(value.projects) ? value.projects : [],
+      updatedAt: row?.updated_at ? new Date(row.updated_at).toISOString() : value.updatedAt || null
+    };
+  }
   ensureDataFile();
   const raw = fs.readFileSync(dataFile, "utf8");
   const parsed = JSON.parse(raw);
@@ -61,12 +117,22 @@ function readData() {
   };
 }
 
-function writeData(data) {
-  ensureDataFile();
+async function writeData(data) {
   const next = {
     projects: Array.isArray(data.projects) ? data.projects : [],
     updatedAt: new Date().toISOString()
   };
+  if (hasDatabase()) {
+    await ensureDatabase();
+    await getPgPool().query(
+      `INSERT INTO retroforma_store (key, value, updated_at)
+       VALUES ($1, $2::jsonb, now())
+       ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()`,
+      ["projects", JSON.stringify(next)]
+    );
+    return next;
+  }
+  ensureDataFile();
   const tmpFile = dataFile + "." + crypto.randomBytes(6).toString("hex") + ".tmp";
   fs.writeFileSync(tmpFile, JSON.stringify(next, null, 2), "utf8");
   fs.renameSync(tmpFile, dataFile);
@@ -145,11 +211,11 @@ function serveStatic(req, res) {
 async function handleApi(req, res) {
   const url = new URL(req.url, "http://localhost");
   if (url.pathname === "/api/health") {
-    sendJson(res, 200, { ok: true });
+    sendJson(res, 200, { ok: true, storage: hasDatabase() ? "postgres" : "file" });
     return;
   }
   if (url.pathname === "/api/projects" && req.method === "GET") {
-    sendJson(res, 200, readData());
+    sendJson(res, 200, await readData());
     return;
   }
   if (url.pathname === "/api/admin/check" && req.method === "GET") {
@@ -171,36 +237,36 @@ async function handleApi(req, res) {
       sendJson(res, 400, { error: "projects array is required" });
       return;
     }
-    sendJson(res, 200, writeData({ projects }));
+    sendJson(res, 200, await writeData({ projects }));
     return;
   }
   if (url.pathname === "/api/projects" && req.method === "POST") {
     const body = await readJsonBody(req);
-    const data = readData();
+    const data = await readData();
     const project = normalizeProject({ ...body, id: body.id || ("project-" + Date.now()) });
     data.projects.unshift(project);
-    sendJson(res, 201, writeData(data));
+    sendJson(res, 201, await writeData(data));
     return;
   }
   const match = url.pathname.match(/^\/api\/projects\/([^/]+)$/);
   if (match && req.method === "PUT") {
     const id = decodeURIComponent(match[1]);
     const body = await readJsonBody(req);
-    const data = readData();
+    const data = await readData();
     const index = data.projects.findIndex((project) => project.id === id);
     if (index < 0) {
       sendJson(res, 404, { error: "Project not found" });
       return;
     }
     data.projects[index] = normalizeProject({ ...body, id }, data.projects[index]);
-    sendJson(res, 200, writeData(data));
+    sendJson(res, 200, await writeData(data));
     return;
   }
   if (match && req.method === "DELETE") {
     const id = decodeURIComponent(match[1]);
-    const data = readData();
+    const data = await readData();
     data.projects = data.projects.filter((project) => project.id !== id);
-    sendJson(res, 200, writeData(data));
+    sendJson(res, 200, await writeData(data));
     return;
   }
   sendJson(res, 404, { error: "Not found" });
@@ -226,7 +292,7 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(port, () => {
-  ensureDataFile();
+  if (!hasDatabase()) ensureDataFile();
   console.log(`RetroForma server listening on ${port}`);
-  console.log(`Data file: ${dataFile}`);
+  console.log(hasDatabase() ? "Storage: postgres" : `Data file: ${dataFile}`);
 });
