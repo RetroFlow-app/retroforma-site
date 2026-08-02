@@ -256,7 +256,7 @@ const PRODUCT_STORAGE_KEY = "retroforma_custom_products_v1";
 const PRODUCT_HIDDEN_STORAGE_KEY = "retroforma_hidden_default_products_v1";
 const ADMIN_STORAGE_KEY = "retroforma_admin_unlocked_v1";
 const ADMIN_VISIBILITY_KEY = "retroforma_admin_visible_v1";
-const ADMIN_CODE = "RetroForma-Admin-2026";
+const ADMIN_CODE = crypto.randomUUID ? crypto.randomUUID() : String(Math.random());
 const MAIL_ADDRESS = "3dretroforma@gmail.com";
 const root = document.documentElement;
 const buttons = [...document.querySelectorAll(".lang-btn")];
@@ -2751,7 +2751,7 @@ updateAdminUi();
   form?.addEventListener("submit", (event) => {
     event.preventDefault();
     const code = String(input?.value || "").trim();
-    if (code === "RetroForma-Admin-2026") {
+    if (false) {
       unlockAdmin();
     } else if (status) {
       status.textContent = "Niepoprawny kod admina.";
@@ -2838,4 +2838,75 @@ updateAdminUi();
       closeLegalModal();
     }
   });
+})();
+
+
+/* RetroForma server-backed public projects v1 */
+(() => {
+  if (document.body?.dataset.adminPage === "true") return;
+  if (typeof renderProjects !== "function") return;
+
+  let serverProjects = null;
+  const previousRenderProjects = renderProjects;
+  const apiBase = (window.RETROFORMA_API_BASE || "").replace(/\/$/, "");
+
+  function normalizeServerProject(project) {
+    const images = Array.isArray(project.images) && project.images.length
+      ? project.images
+      : [project.image].filter(Boolean);
+    return {
+      id: project.id,
+      title: project.title || "",
+      description: project.description || "",
+      tag: project.tag || "",
+      price: project.price || "",
+      shipping: project.shipping || "",
+      leadTime: project.leadTime || "",
+      payment: project.payment || "",
+      availableForOrder: project.availableForOrder === true || project.availableForOrder === "true" || project.availableForOrder === "on",
+      image: images[0] || "",
+      images,
+      alt: project.title || ""
+    };
+  }
+
+  renderProjects = function() {
+    if (!serverProjects) {
+      previousRenderProjects();
+      return;
+    }
+    if (!projectGrid && !projectPreviewGrid) return;
+    const items = serverProjects.map(normalizeServerProject);
+    const preview = items.slice(0, 6);
+    const extra = items.slice(6);
+    if (projectPreviewGrid) {
+      projectPreviewGrid.innerHTML = "";
+      preview.forEach((project) => projectPreviewGrid.appendChild(createProjectCard(project)));
+    }
+    if (projectGrid) {
+      projectGrid.innerHTML = "";
+      extra.forEach((project) => projectGrid.appendChild(createProjectCard(project)));
+    }
+    if (projectLibrary) {
+      projectLibrary.hidden = extra.length === 0;
+      if (extra.length === 0) projectLibrary.open = false;
+    }
+    if (projectCount) projectCount.textContent = `${items.length} ${t("projects.count")}`;
+  };
+
+  async function loadServerProjects() {
+    try {
+      const response = await fetch(apiBase + "/api/projects?ts=" + Date.now(), { cache: "no-store" });
+      if (!response.ok) throw new Error("API unavailable");
+      const data = await response.json();
+      if (!Array.isArray(data.projects)) throw new Error("Invalid API response");
+      serverProjects = data.projects;
+      renderProjects();
+    } catch {
+      serverProjects = null;
+      previousRenderProjects();
+    }
+  }
+
+  loadServerProjects();
 })();
