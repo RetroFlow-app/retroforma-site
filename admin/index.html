@@ -431,6 +431,7 @@
   const ADMIN_CODE_KEY = 'retroforma_admin_code_v1';
   const apiBase = (window.RETROFORMA_API_BASE || '').replace(/\/$/, '');
   if (!mount) return;
+  let serverProjects = [];
 
   function esc(value) {
     return String(value || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -444,6 +445,8 @@
   function adminCode() {
     return sessionStorage.getItem(ADMIN_CODE_KEY) || '';
   }
+
+  const LOCAL_STORAGE_LABEL = 'plik lokalny';
 
   async function api(path, options = {}) {
     const response = await fetch(apiBase + path, {
@@ -464,11 +467,17 @@
     return `<label><span>${label}</span>${area ? `<textarea name="${name}" rows="3">${esc(value)}</textarea>` : `<input type="text" name="${name}" value="${esc(value)}">`}</label>`;
   }
 
-  function projectForm(project) {
+  async function saveProjectOrder() {
+    await api('/api/projects', { method: 'PUT', body: JSON.stringify({ projects: serverProjects }) });
+    if (status) status.textContent = 'Zmieniono kolejnosc projektow w pliku lokalnym.';
+    await renderServerAdmin();
+  }
+
+  function projectForm(project, index, total) {
     const form = document.createElement('form');
     form.className = 'rf-real-row';
     form.innerHTML = `
-      <div class="rf-real-head"><strong>${esc(project.title)}</strong><span>Serwer</span></div>
+      <div class="rf-real-head"><strong>${esc(project.title)}</strong><span>${LOCAL_STORAGE_LABEL}</span></div>
       ${field('Nazwa', 'title', project.title)}
       ${field('Opis', 'description', project.description, true)}
       ${field('Tag', 'tag', project.tag || '')}
@@ -479,7 +488,9 @@
       <label class="checkbox-field"><input type="checkbox" name="availableForOrder" ${project.availableForOrder ? 'checked' : ''}><span>Dostepny do kupienia</span></label>
       ${field('Zdjęcia / ścieżki po przecinku', 'images', (project.images || []).join(', '))}
       <div class="rf-real-actions">
-        <button type="submit" class="button button-primary">Zapisz na serwerze</button>
+        <button type="button" class="button button-secondary" data-move-up ${index <= 0 ? 'disabled' : ''}>W gore</button>
+        <button type="button" class="button button-secondary" data-move-down ${index >= total - 1 ? 'disabled' : ''}>W dol</button>
+        <button type="submit" class="button button-primary">Zapisz zmiany</button>
         <button type="button" class="button button-secondary" data-delete>Usuń</button>
       </div>`;
     form.addEventListener('submit', async (event) => {
@@ -500,6 +511,24 @@
         await api('/api/projects/' + encodeURIComponent(project.id), { method: 'PUT', body: JSON.stringify(next) });
         if (status) status.textContent = 'Zapisano na serwerze. Telefon zobaczy to po odświeżeniu.';
         await renderServerAdmin();
+      } catch (error) {
+        if (status) status.textContent = error.message;
+      }
+    });
+    form.querySelector('[data-move-up]')?.addEventListener('click', async () => {
+      if (index <= 0) return;
+      [serverProjects[index - 1], serverProjects[index]] = [serverProjects[index], serverProjects[index - 1]];
+      try {
+        await saveProjectOrder();
+      } catch (error) {
+        if (status) status.textContent = error.message;
+      }
+    });
+    form.querySelector('[data-move-down]')?.addEventListener('click', async () => {
+      if (index >= serverProjects.length - 1) return;
+      [serverProjects[index], serverProjects[index + 1]] = [serverProjects[index + 1], serverProjects[index]];
+      try {
+        await saveProjectOrder();
       } catch (error) {
         if (status) status.textContent = error.message;
       }
@@ -537,7 +566,7 @@
             ${field('Płatność','payment','')}
             <label class="checkbox-field"><input type="checkbox" name="availableForOrder" checked><span>Dostepny do kupienia</span></label>
             ${field('Zdjęcia / ścieżki po przecinku','images','./Projekty/stojak.jpg')}
-            <div class="rf-real-actions"><button type="submit" class="button button-primary">Dodaj na serwerze</button></div>
+            <div class="rf-real-actions"><button type="submit" class="button button-primary">Dodaj projekt</button></div>
           </form>
         </section>
         <section class="rf-real-panel is-active"><div class="rf-real-panel-head"><h3>Projekty z serwera</h3></div><div class="rf-real-list" id="rfServerProjectList">Ładowanie...</div></section>
@@ -546,8 +575,9 @@
     const list = mount.querySelector('#rfServerProjectList');
     try {
       const data = await api('/api/projects', { method: 'GET' });
+      serverProjects = Array.isArray(data.projects) ? data.projects : [];
       list.innerHTML = '';
-      (data.projects || []).forEach((project) => list.appendChild(projectForm(project)));
+      serverProjects.forEach((project, index) => list.appendChild(projectForm(project, index, serverProjects.length)));
     } catch (error) {
       list.innerHTML = `<p class="project-form-note">API serwera nie jest jeszcze aktywne: ${esc(error.message)}. Trzeba uruchomić tę stronę jako Web Service na Renderze.</p>`;
     }
