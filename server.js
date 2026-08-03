@@ -187,7 +187,11 @@ function serveStatic(req, res) {
   const requestUrl = new URL(req.url, "http://localhost");
   let pathname = decodeURIComponent(requestUrl.pathname);
   if (pathname.endsWith("/")) pathname += "index.html";
-  const filePath = path.normalize(path.join(rootDir, pathname));
+  let filePath = path.normalize(path.join(rootDir, pathname));
+  if (!hasDatabase() && pathname === "/data/projects.json") {
+    ensureDataFile();
+    filePath = dataFile;
+  }
   if (!filePath.startsWith(rootDir)) {
     res.writeHead(403);
     res.end("Forbidden");

@@ -2894,13 +2894,25 @@ updateAdminUi();
     if (projectCount) projectCount.textContent = `${items.length} ${t("projects.count")}`;
   };
 
+  async function fetchProjectsSource(url) {
+    const response = await fetch(url, { cache: "no-store" });
+    if (!response.ok) throw new Error("Projects source unavailable");
+    const data = await response.json();
+    if (!Array.isArray(data.projects)) throw new Error("Invalid projects source");
+    return data.projects;
+  }
+
   async function loadServerProjects() {
     try {
-      const response = await fetch(apiBase + "/api/projects?ts=" + Date.now(), { cache: "no-store" });
-      if (!response.ok) throw new Error("API unavailable");
-      const data = await response.json();
-      if (!Array.isArray(data.projects)) throw new Error("Invalid API response");
-      serverProjects = data.projects;
+      serverProjects = await fetchProjectsSource(apiBase + "/api/projects?ts=" + Date.now());
+      renderProjects();
+      return;
+    } catch {
+      // Static hosting mode: no API, but the deployed JSON file can still drive the public site.
+    }
+
+    try {
+      serverProjects = await fetchProjectsSource("./data/projects.json?ts=" + Date.now());
       renderProjects();
     } catch {
       serverProjects = null;
